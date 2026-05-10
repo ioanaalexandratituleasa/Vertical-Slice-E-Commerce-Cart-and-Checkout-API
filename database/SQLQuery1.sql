@@ -14,6 +14,9 @@ Price float not null,
 ImageP varchar(255)
 )
 
+ALTER TABLE Products
+ADD Stock INT DEFAULT 0 
+
 CREATE TABLE OrderTable(
 OrderID int primary key,
 DateOrder date not null,
@@ -24,6 +27,7 @@ CONSTRAINT fk_users
 FOREIGN KEY(UserID) 
 REFERENCES Users(UserID)
 )
+
 
 CREATE TABLE Book(
 UserID int,
