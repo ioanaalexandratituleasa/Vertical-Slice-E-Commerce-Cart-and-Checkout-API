@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -9,4 +9,5 @@ import { RouterModule } from '@angular/router';
   styleUrl: './navbar.component.css'
 })
 
-export class NavbarComponent { }
+export class NavbarComponent { 
+}
