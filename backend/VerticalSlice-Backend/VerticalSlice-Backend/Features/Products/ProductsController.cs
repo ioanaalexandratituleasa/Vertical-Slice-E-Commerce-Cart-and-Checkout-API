@@ -24,5 +24,13 @@ namespace VerticalSlice_Backend.Features.Products
                 return NotFound(new { message = $"Product with ID{id} not found" });
             return Ok(product);
         }
+
+        [HttpGet]
+
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var products = await _productsRepository.GetAllProductsAsync();
+            return Ok(products);
+        }
     }
 }
