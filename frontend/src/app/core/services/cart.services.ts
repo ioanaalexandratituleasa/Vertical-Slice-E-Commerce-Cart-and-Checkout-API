@@ -19,18 +19,42 @@ export class CartService {
   );
 
   addToCart(product: Product) {
-    const items = this.cartItems();
-    const existingItem = items.find(i => i.productID === product.productID);
+  const items = this.cartItems();
+  const existingItem = items.find(i => i.productID === product.productID);
 
-    if (existingItem) {
+  if (existingItem) {
+    if (existingItem.quantity < product.stock) {
       existingItem.quantity++;
       this.cartItems.set([...items]);
     } else {
+      alert(`Sorry, only ${product.stock} items available in stock!`);
+    }
+  } else {
+    if (product.stock > 0) {
       this.cartItems.set([...items, { ...product, quantity: 1 }]);
     }
   }
+}
 
   removeFromCart(productId: number) {
     this.cartItems.set(this.cartItems().filter(i => i.productID !== productId));
   }
+
+  decreaseQuantity(productId: number) {
+  const items = this.cartItems();
+  const index = items.findIndex(i => i.productID === productId);
+
+  if (index !== -1) {
+    const updatedItems = [...items];
+    if (updatedItems[index].quantity > 1) {
+      updatedItems[index] = { 
+        ...updatedItems[index], 
+        quantity: updatedItems[index].quantity - 1 
+      };
+      this.cartItems.set(updatedItems);
+    } else {
+      this.removeFromCart(productId);
+    }
+  }
+}
 }

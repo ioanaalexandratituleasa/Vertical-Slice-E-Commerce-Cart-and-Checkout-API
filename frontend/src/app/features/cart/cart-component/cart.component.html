@@ -19,7 +19,26 @@
           <tr>
             <td>{{ item.title }}</td>
             <td>${{ item.price }}</td>
-            <td>{{ item.quantity }}</td>
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <button 
+                  class="btn btn-outline-secondary btn-sm" 
+                  (click)="decreaseQty(item.productID)">
+                  <i class="bi bi-dash">-</i>
+                </button>
+
+                <span class="fw-bold" style="min-width: 20px; text-align: center;">
+                  {{ item.quantity }}
+                </span>
+
+                <button 
+                  class="btn btn-outline-secondary btn-sm" 
+                  (click)="increaseQty(item)"
+                  [disabled]="item.quantity >= item.stock">
+                  <i class="bi bi-plus">+</i>
+                </button>
+              </div>
+            </td>
             <td>${{ item.price * item.quantity }}</td>
             <td>
               <button class="btn btn-sm btn-danger" (click)="removeItem(item.productID)">Remove</button>

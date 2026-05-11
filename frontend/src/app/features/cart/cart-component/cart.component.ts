@@ -17,4 +17,12 @@ export class CartComponent {
   removeItem(productId: number) {
     this.cartService.removeFromCart(productId);
   }
+
+  decreaseQty(productId: number) {
+  this.cartService.decreaseQuantity(productId);
+}
+
+increaseQty(product: any) {
+  this.cartService.addToCart(product); 
+}
 }

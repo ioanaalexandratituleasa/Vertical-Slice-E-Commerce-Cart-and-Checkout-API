@@ -20,7 +20,7 @@
             <div class="card-footer bg-transparent border-top-0 pb-3">
               <div class="d-grid gap-2">
                 <a [routerLink]="['/products', p.productID]" class="btn btn-outline-dark">Details</a>
-                <button class="btn btn-primary" [disabled]="p.stock === 0">Add to Cart</button>
+                <button class="btn btn-primary" [disabled]="p.stock === 0" (click)="addToCart(p)"> Add to Cart </button>
               </div>
             </div>
           </div>
