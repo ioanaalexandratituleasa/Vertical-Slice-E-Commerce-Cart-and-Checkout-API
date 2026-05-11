@@ -1,8 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit,inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../core/services/product.services';
 import { Product } from '../../../core/models/product.models';
+import { CartService } from '../../../core/services/cart.services';
 
 @Component({
   selector: 'app-product-detail',
@@ -12,15 +13,15 @@ import { Product } from '../../../core/models/product.models';
   styleUrl: './product-detail.component.css'
 })
 export class ProductDetailComponent implements OnInit {
+  private productService = inject(ProductService);
+  private cartService = inject(CartService);
   product = signal<Product | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
 
   constructor(
     private route: ActivatedRoute,
-    private productService: ProductService
   ) {}
-
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.productService.getProductById(id).subscribe({
@@ -47,5 +48,13 @@ export class ProductDetailComponent implements OnInit {
     if (stock === 0) return 'text-danger';
     if (stock < 5) return 'text-warning';
     return 'text-success';
+  }
+
+  addToCart(product: Product | null) {
+    if (product) {
+      this.cartService.addToCart(product);
+      // Opțional: un feedback vizual (ex: alert sau toast)
+      console.log('Adăugat din detalii:', product.title);
+    }
   }
 }

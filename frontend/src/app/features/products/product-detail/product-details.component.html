@@ -46,12 +46,7 @@
             </p>
 
             <div class="mt-4 d-flex gap-2">
-              <button
-                class="btn btn-primary"
-                [disabled]="p.stock === 0"
-              >
-                Add to Cart
-              </button>
+              <button class="btn btn-success btn-lg" (click)="addToCart(product())" [disabled]="product()?.stock === 0"> Add to Cart</button>
               <a routerLink="/products" class="btn btn-outline-secondary">
                 Back to Products
               </a>
