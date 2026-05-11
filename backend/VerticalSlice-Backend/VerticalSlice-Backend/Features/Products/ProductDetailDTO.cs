@@ -1,6 +1,6 @@
-﻿namespace VerticalSlice_Backend.Entities
+﻿namespace VerticalSlice_Backend.Features.Products
 {
-    public class Product
+    public class ProductDetailDTO
     {
         public int ProductID { get; set; }
         public string Title { get; set; }
