@@ -4,11 +4,11 @@ VALUES( 1, ' Ioana', 'Popescu', 'popescuioana@mail.com', '1234')
 INSERT INTO Users(UserID, FName, LName, Email, Pasword)
 VALUES( 2, ' Andrei', 'Iordan', 'andreiiordan@mail.com', '5678')
 
-INSERT INTO Products( ProductID, Title, DescriptionP, Price, ImageP)
-VALUES (1, 'Shirt', 'Long sleeves blue shirt', 20.00, 'poza1.jpg')
+INSERT INTO Products( ProductID, Title, DescriptionP, Price, ImageP, Stock)
+VALUES (1, 'Shirt', 'Long sleeves blue shirt', 20.00, 'poza1.jpg', 2)
 
-INSERT INTO Products( ProductID, Title, DescriptionP, Price, ImageP)
-VALUES (2, 'Dress', 'Mini dress with flowers' , 35.00, 'poza2.jpg')
+INSERT INTO Products( ProductID, Title, DescriptionP, Price, ImageP, Stock)
+VALUES (2, 'Dress', 'Mini dress with flowers' , 35.00, 'poza2.jpg',0)
 
 
 INSERT INTO OrderTable(OrderID, DateOrder, Address, UserID)
