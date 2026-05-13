@@ -1,7 +1,7 @@
-﻿
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
-using Microsoft.Data.SqlClient;
 using VerticalSlice_Backend.Common;
+using VerticalSlice_Backend.Features.Checkout.CheckoutDTOs;
 
 namespace VerticalSlice_Backend.Features.Checkout
 {
@@ -14,10 +14,14 @@ namespace VerticalSlice_Backend.Features.Checkout
             _dbConnectionFactory = dbConnectionFactory;
         }
 
-        public async Task PlaceOrderAsync(CheckoutDTO data)
+        public async Task PlaceOrderAsync(CheckoutCreateDTO data)
         {
+            if (data.Items == null || !data.Items.Any())
+                throw new Exception("The order does not contain any products");
+
             using var connection = _dbConnectionFactory.CreateConnection();
             var sqlConn = (SqlConnection)connection;
+
             if (sqlConn.State != ConnectionState.Open)
                 await sqlConn.OpenAsync();
 
@@ -30,10 +34,12 @@ namespace VerticalSlice_Backend.Features.Checkout
                                          VALUES (GETDATE(), @Addr, @UserID)";
 
                 using var cmdOrder = new SqlCommand(orderSql, sqlConn, transaction);
-                cmdOrder.Parameters.AddWithValue("@Addr", data.Address);
-                cmdOrder.Parameters.AddWithValue("@UserID", 1);
+                cmdOrder.Parameters.Add("@Addr", SqlDbType.VarChar).Value = (object)data.Address ?? DBNull.Value;
+                cmdOrder.Parameters.Add("@UserID", SqlDbType.Int).Value = 1;
 
-                int orderId = (int)await cmdOrder.ExecuteScalarAsync();
+                var result = await cmdOrder.ExecuteScalarAsync();
+                if (result == null) throw new Exception("Couldn't generate Order's ID");
+                int orderId = (int)result;
 
                 foreach (var item in data.Items)
                 {
@@ -43,12 +49,10 @@ namespace VerticalSlice_Backend.Features.Checkout
                     using var cmdItem = new SqlCommand(itemSql, sqlConn, transaction);
                     cmdItem.Parameters.AddWithValue("@OID", orderId);
                     cmdItem.Parameters.AddWithValue("@PID", item.ProductID);
-                    cmdItem.Parameters.AddWithValue("@Price", (decimal)item.Price * item.Quantity);
+                    cmdItem.Parameters.AddWithValue("@Price", item.TotalPrice * item.Quantity);
                     cmdItem.Parameters.AddWithValue("@Qty", item.Quantity);
 
                     await cmdItem.ExecuteNonQueryAsync();
-
-
                     const string stockSql = @"UPDATE Products 
                                              SET Stock = Stock - @Qty 
                                              WHERE ProductID = @PID AND Stock >= @Qty";
@@ -61,16 +65,16 @@ namespace VerticalSlice_Backend.Features.Checkout
 
                     if (rowsAffected == 0)
                     {
-                        throw new Exception($"Stoc insuficient pentru produsul ID: {item.ProductID}!");
+                        throw new Exception($"Out of stock or the product does not exist (ID: {item.ProductID})!");
                     }
                 }
 
                 await transaction.CommitAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                throw;
+                throw new Exception("Error processing the order " + ex.Message);
             }
         }
     }

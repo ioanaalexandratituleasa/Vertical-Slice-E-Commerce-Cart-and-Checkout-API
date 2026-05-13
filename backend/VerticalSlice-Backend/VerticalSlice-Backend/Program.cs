@@ -4,7 +4,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<VerticalSlice_Backend.Common.DbConnectionFactory>();
 
-builder.Services.AddScoped<VerticalSlice_Backend.Features.Admin.AdminRepository>();
 builder.Services.AddScoped<VerticalSlice_Backend.Features.CartAndFavorites.CartAndFavoritesRepository>();
 builder.Services.AddScoped<VerticalSlice_Backend.Features.Identity.IdentityRepository>();
 builder.Services.AddScoped<VerticalSlice_Backend.Features.Products.ProductsRepository>();

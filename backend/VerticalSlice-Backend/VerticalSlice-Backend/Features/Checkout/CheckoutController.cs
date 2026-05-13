@@ -1,27 +1,28 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VerticalSlice_Backend.Features.Checkout.CheckoutDTOs;
 using VerticalSlice_Backend.Features.Products;
 
 namespace VerticalSlice_Backend.Features.Checkout
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Checkout : ControllerBase
+    public class CheckoutController : ControllerBase
     {
         private readonly CheckoutRepository _checkoutRepository;
 
-        public Checkout(CheckoutRepository checkoutRepository)
+        public CheckoutController(CheckoutRepository checkoutRepository)
         {
             _checkoutRepository = checkoutRepository;
         }
 
 
         [HttpPost]
-        public IActionResult Post([FromBody] CheckoutDTO request)
+        public async Task<IActionResult> Post([FromBody] CheckoutCreateDTO request)
         {
             try
             {
-                _checkoutRepository.PlaceOrderAsync(request);
+               await _checkoutRepository.PlaceOrderAsync(request);
                 return Ok(new { message = "Comandă finalizată cu succes!" });
             }
             catch (Exception ex)

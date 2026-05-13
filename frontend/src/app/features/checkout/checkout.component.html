@@ -1,0 +1,12 @@
+<div class="container mt-4">
+  <h2>Checkout</h2>
+  <div class="mb-3">
+    <label>Address of shipping:</label>
+    <textarea class="form-control" [(ngModel)]="address" placeholder="Ex: Str. Revolutiei nr. 10..."></textarea>
+  </div>
+
+  <h4>Order summary: ${{ cartService.totalPrice() }}</h4>
+  <button class="btn btn-success btn-lg" (click)="confirmOrder()" [disabled]="!address">
+    Place Order
+  </button>
+</div>

@@ -1,58 +1,51 @@
-CREATE TABLE Users(
-UserID int PRIMARY KEY,
-FName varchar(255) Not null,
-LName varchar(255) not null,
-Email varchar(255) not null,
-Pasword varchar(255)
-)
+DROP TABLE OrderItems;
+DROP TABLE Book;
+DROP TABLE OrderTable;
+DROP TABLE Products;
+DROP TABLE Users;
 
-CREATE TABLE Products(
-ProductID int primary key,
-Title varchar(255) not null,
-DescriptionP varchar(300),
-Price float not null,
-ImageP varchar(255)
-)
+CREATE TABLE Users (
+    UserID  INT IDENTITY(1,1) PRIMARY KEY,
+    FName   VARCHAR(255) NOT NULL,
+    LName   VARCHAR(255) NOT NULL,
+    Email   VARCHAR(255) NOT NULL,
+    Pasword VARCHAR(255)
+);
 
-ALTER TABLE Products
-ADD Stock INT DEFAULT 0 
+CREATE TABLE Products (
+    ProductID    INT IDENTITY(1,1) PRIMARY KEY,
+    Title        VARCHAR(255) NOT NULL,
+    DescriptionP VARCHAR(300),
+    Price        FLOAT NOT NULL,
+    ImageP       VARCHAR(255),
+    Stock        INT DEFAULT 0
+);
 
-CREATE TABLE OrderTable(
-OrderID int primary key,
-DateOrder date not null,
-Address varchar(255) not null,
+CREATE TABLE OrderTable (
+    OrderID   INT IDENTITY(1,1) PRIMARY KEY,
+    DateOrder DATE NOT NULL,
+    Address   VARCHAR(255) NOT NULL,
+    UserID    INT,
+    CONSTRAINT fk_users
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
 
-UserID int,
-CONSTRAINT fk_users 
-FOREIGN KEY(UserID) 
-REFERENCES Users(UserID)
-)
-
-
-CREATE TABLE Book(
-UserID int,
-ProductID int,
-
-CONSTRAINT fk_user
-FOREIGN KEY(UserID)
-REFERENCES Users(UserID),
-
-CONSTRAINT product_fk
-FOREIGN KEY(ProductID)
-REFERENCES Products(ProductID)
-)
+CREATE TABLE Book (
+    UserID    INT,
+    ProductID INT,
+    CONSTRAINT fk_user
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    CONSTRAINT product_fk
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
 
 CREATE TABLE OrderItems (
-    OrderID int,
-    ProductID int,
-    TotalPrice decimal(18, 2) not null,
-    Quantity int not null,
-    
+    OrderID    INT,
+    ProductID  INT,
+    TotalPrice DECIMAL(18,2) NOT NULL,
+    Quantity   INT NOT NULL,
     CONSTRAINT FK_OrderItems_Order
-    FOREIGN KEY (OrderID) 
-    REFERENCES OrderTable(OrderID),
-
-    CONSTRAINT FK_OrderItems_Product 
-    FOREIGN KEY (ProductID)
-    REFERENCES Products(ProductID)
-)
+    FOREIGN KEY (OrderID) REFERENCES OrderTable(OrderID),
+    CONSTRAINT FK_OrderItems_Product
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
