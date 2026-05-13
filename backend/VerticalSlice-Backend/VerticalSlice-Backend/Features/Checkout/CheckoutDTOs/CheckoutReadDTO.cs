@@ -2,7 +2,7 @@
 {
     public record CheckoutReadDTO
    (
-        int OrderID = 1,
+        int OrderID = 0,
         string Address = "",
         DateTime DateOrder = new DateTime(),
         List<OrderItemDTO>? Items = null

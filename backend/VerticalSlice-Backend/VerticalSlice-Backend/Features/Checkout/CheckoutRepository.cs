@@ -20,25 +20,30 @@ namespace VerticalSlice_Backend.Features.Checkout
                 throw new Exception("The order does not contain any products");
 
             using var connection = _dbConnectionFactory.CreateConnection();
-            var sqlConn = (SqlConnection)connection;
-
-            if (sqlConn.State != ConnectionState.Open)
-                await sqlConn.OpenAsync();
-
-            using var transaction = sqlConn.BeginTransaction();
+            await ((SqlConnection)connection).OpenAsync();
+            using var transaction = connection.BeginTransaction();
 
             try
             {
                 const string orderSql = @"INSERT INTO OrderTable (DateOrder, Address, UserID) 
-                                         OUTPUT INSERTED.OrderID 
-                                         VALUES (GETDATE(), @Addr, @UserID)";
+                                         VALUES (GETDATE(), @Addr, @UserID);
+                                         SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                using var cmdOrder = new SqlCommand(orderSql, sqlConn, transaction);
-                cmdOrder.Parameters.Add("@Addr", SqlDbType.VarChar).Value = (object)data.Address ?? DBNull.Value;
-                cmdOrder.Parameters.Add("@UserID", SqlDbType.Int).Value = 1;
+                using var cmdOrder = connection.CreateCommand();
+                cmdOrder.CommandText = orderSql;
+                cmdOrder.Transaction = transaction; 
+                var paramAddr = cmdOrder.CreateParameter();
+                paramAddr.ParameterName = "@Addr";
+                paramAddr.Value = (object)data.Address ?? DBNull.Value;
+                cmdOrder.Parameters.Add(paramAddr);
 
-                var result = await cmdOrder.ExecuteScalarAsync();
-                if (result == null) throw new Exception("Couldn't generate Order's ID");
+                var paramUser = cmdOrder.CreateParameter();
+                paramUser.ParameterName = "@UserID";
+                paramUser.Value = 2;
+                cmdOrder.Parameters.Add(paramUser);
+
+                var result = await ((SqlCommand)cmdOrder).ExecuteScalarAsync();
+                if (result == null) throw new Exception("Database failed to generate OrderID.");
                 int orderId = (int)result;
 
                 foreach (var item in data.Items)
@@ -46,36 +51,49 @@ namespace VerticalSlice_Backend.Features.Checkout
                     const string itemSql = @"INSERT INTO OrderItems (OrderID, ProductID, TotalPrice, Quantity) 
                                            VALUES (@OID, @PID, @Price, @Qty)";
 
-                    using var cmdItem = new SqlCommand(itemSql, sqlConn, transaction);
-                    cmdItem.Parameters.AddWithValue("@OID", orderId);
-                    cmdItem.Parameters.AddWithValue("@PID", item.ProductID);
-                    cmdItem.Parameters.AddWithValue("@Price", item.TotalPrice * item.Quantity);
-                    cmdItem.Parameters.AddWithValue("@Qty", item.Quantity);
+                    using var cmdItem = connection.CreateCommand();
+                    cmdItem.CommandText = itemSql;
+                    cmdItem.Transaction = transaction;
 
-                    await cmdItem.ExecuteNonQueryAsync();
+                    AddParam(cmdItem, "@OID", orderId);
+                    AddParam(cmdItem, "@PID", item.ProductID);
+                   
+                    AddParam(cmdItem, "@Price", item.TotalPrice * item.Quantity);
+                    AddParam(cmdItem, "@Qty", item.Quantity);
+
+                    await ((SqlCommand)cmdItem).ExecuteNonQueryAsync();
+
                     const string stockSql = @"UPDATE Products 
                                              SET Stock = Stock - @Qty 
                                              WHERE ProductID = @PID AND Stock >= @Qty";
 
-                    using var cmdStock = new SqlCommand(stockSql, sqlConn, transaction);
-                    cmdStock.Parameters.AddWithValue("@Qty", item.Quantity);
-                    cmdStock.Parameters.AddWithValue("@PID", item.ProductID);
+                    using var cmdStock = connection.CreateCommand();
+                    cmdStock.CommandText = stockSql;
+                    cmdStock.Transaction = transaction;
 
-                    int rowsAffected = await cmdStock.ExecuteNonQueryAsync();
+                    AddParam(cmdStock, "@Qty", item.Quantity);
+                    AddParam(cmdStock, "@PID", item.ProductID);
 
+                    int rowsAffected = await ((SqlCommand)cmdStock).ExecuteNonQueryAsync();
                     if (rowsAffected == 0)
-                    {
-                        throw new Exception($"Out of stock or the product does not exist (ID: {item.ProductID})!");
-                    }
+                        throw new Exception($"Stock insufficient for Product ID: {item.ProductID}");
                 }
 
-                await transaction.CommitAsync();
+                transaction.Commit();
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
-                throw new Exception("Error processing the order " + ex.Message);
+                transaction.Rollback();
+                throw new Exception("Error processing the order: " + ex.Message);
             }
+        }
+
+        private void AddParam(IDbCommand command, string name, object value)
+        {
+            var p = command.CreateParameter();
+            p.ParameterName = name;
+            p.Value = value ?? DBNull.Value;
+            command.Parameters.Add(p);
         }
     }
 }

@@ -1,9 +1,8 @@
--- Sterge dependentele
+
 DROP TABLE OrderItems;
 DROP TABLE Book;
 DROP TABLE OrderTable;
 
--- Recreeaza cu IDENTITY
 CREATE TABLE OrderTable (
     OrderID   INT IDENTITY(1,1) PRIMARY KEY,
     DateOrder DATE NOT NULL,
@@ -32,3 +31,4 @@ CREATE TABLE Book (
     CONSTRAINT product_fk
     FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 );
+SELECT COLUMNPROPERTY(OBJECT_ID('OrderTable'), 'OrderID', 'IsIdentity');

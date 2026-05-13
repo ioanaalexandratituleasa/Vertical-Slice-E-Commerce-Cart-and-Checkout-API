@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using VerticalSlice_Backend.Features.Checkout.CheckoutDTOs;
 using VerticalSlice_Backend.Features.Products;
 
-namespace VerticalSlice_Backend.Features.Checkout
+namespace VerticalSlice_Backend.Features.Checkout.CheckoutDTOs
 {
     [Route("api/[controller]")]
     [ApiController]
