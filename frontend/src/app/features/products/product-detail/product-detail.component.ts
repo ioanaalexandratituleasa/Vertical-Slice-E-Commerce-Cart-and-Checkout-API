@@ -10,8 +10,7 @@ import { AuthService } from '../../../core/services/identity.services';
   selector: 'app-product-detail',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './product-details.component.html',
-  styleUrl: './product-detail.component.css'
+  templateUrl: './product-details.component.html'
 })
 export class ProductDetailComponent {
   private productService = inject(ProductService);
