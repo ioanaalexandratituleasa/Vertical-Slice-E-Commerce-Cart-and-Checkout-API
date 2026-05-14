@@ -11,3 +11,15 @@ export interface RegisterResponse{
     lName : string;
     eMail : string;
 }
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  userID: number;
+  fName: string;
+  email: string;
+}
