@@ -3,6 +3,7 @@ import { ProductDetailComponent } from './features/products/product-detail/produ
 import {ProductListComponent} from './features/products/product-list/product-list.component';
 import { CartComponent } from './features/cart/cart-component/cart.component';
 import { CheckoutComponent } from './features/checkout/checkout.component';
+import { RegisterComponent } from './features/identity/register/register.component';
 export const routes: Routes = [
   {
     path: 'products/:id', component: ProductDetailComponent
@@ -15,6 +16,9 @@ export const routes: Routes = [
   },
   {
     path:'checkout', component: CheckoutComponent
+  },
+  {
+    path:'register', component:RegisterComponent
   }
 
 ];
