@@ -8,7 +8,7 @@ import{AuthService} from '../../../core/services/identity.services';
     selector:'app-register',
     standalone: true,
     imports:[CommonModule, FormsModule, RouterModule],
-    templateUrl: `./register.component.html`
+    templateUrl: './register.component.html'
 })
 
 export class RegisterComponent{
