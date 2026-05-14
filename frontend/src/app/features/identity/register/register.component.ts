@@ -38,13 +38,24 @@ export class RegisterComponent{
     }).subscribe({
       next: (res) => {
         this.success.set(`Cont creat cu succes! Bine ai venit, ${res.fName}!`);
-        this.loading.set(false);
-        setTimeout(() => this.router.navigate(['/products']), 2000);
-      },
-      error: (err) => {
-        this.error.set(err.error || 'A apărut o eroare.');
-        this.loading.set(false);
-      }
-    });
+        this.authService.login({
+        email: this.email,
+        password: this.password
+      }).subscribe({
+        next: () => {
+          this.loading.set(false);
+          setTimeout(() => this.router.navigate(['/products']), 2000);
+        },
+        error: () => {
+          this.loading.set(false);
+          setTimeout(() => this.router.navigate(['/login']), 2000);
+        }
+      });
+    },
+    error: (err) => {
+      this.error.set(err.error || 'A apărut o eroare.');
+      this.loading.set(false);
+    }
+  });
   }
 }
