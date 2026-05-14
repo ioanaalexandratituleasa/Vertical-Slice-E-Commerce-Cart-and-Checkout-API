@@ -1,0 +1,42 @@
+<div class="container py-4">
+  <h2 class="mb-4">Our Products</h2>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else {
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      @for (p of products(); track p.productID) {
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <img [src]="p.imageP" 
+                 class="card-img-top" [alt]="p.title" style="height: 400px; object-fit: cover;">
+            
+            <div class="card-body">
+              <h5 class="card-title">{{ p.title }}</h5>
+              <p class="card-text text-muted text-truncate">{{ p.descriptionP }}</p>
+              <p class="fs-5 fw-bold text-primary">${{ p.price | number:'1.2-2' }}</p>
+              
+              <p class="mb-1">
+                <strong>Availability: </strong>
+                <span [class]="p.stock === 0 ? 'text-danger' : (p.stock < 5 ? 'text-warning' : 'text-success')">
+                  {{ p.stock === 0 ? 'Out of Stock' : (p.stock < 5 ? 'Only ' + p.stock + ' left!' : 'In Stock (' + p.stock + ')') }}
+                </span>
+              </p>
+            </div>
+
+            <div class="card-footer bg-transparent border-top-0 pb-3">
+              <div class="d-grid gap-2">
+                <a [routerLink]="['/products', p.productID]" class="btn btn-outline-dark">Details</a>
+                <button class="btn btn-primary" [disabled]="p.stock === 0" (click)="addToCart(p)"> 
+                  Add to Cart 
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

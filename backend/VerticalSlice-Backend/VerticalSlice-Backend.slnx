@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="VerticalSlice-Backend.test/VerticalSlice-Backend.test.csproj" />
+  <Project Path="VerticalSlice-Backend/VerticalSlice-Backend.csproj" />
+</Solution>
