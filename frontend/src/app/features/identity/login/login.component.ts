@@ -8,7 +8,7 @@ import { AuthService } from '../../../core/services/identity.services';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  template: './login.component.html'
+  templateUrl: './login.component.html'
 })
 
 export class LoginComponent{
