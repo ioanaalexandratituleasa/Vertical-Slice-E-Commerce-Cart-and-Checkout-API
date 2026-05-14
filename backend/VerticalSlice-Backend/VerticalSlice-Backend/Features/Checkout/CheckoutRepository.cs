@@ -39,7 +39,7 @@ namespace VerticalSlice_Backend.Features.Checkout
 
                 var paramUser = cmdOrder.CreateParameter();
                 paramUser.ParameterName = "@UserID";
-                paramUser.Value = 2;
+                paramUser.Value = data.UserID;
                 cmdOrder.Parameters.Add(paramUser);
 
                 var result = await ((SqlCommand)cmdOrder).ExecuteScalarAsync();
