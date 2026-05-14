@@ -23,14 +23,17 @@
                     </a>
                 </li>
                 
-                <li class="nav-item">
-                     <a class="nav-link" routerLink="/login">Login</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" routerLink="/register">Register</a>
-                </li>
-        
+                @if (authService.isLoggedIn()) {
+                     <span class="navbar-text me-3">
+                        Hello, {{ authService.currentUser()?.fName }}!
+                    </span>
+                    <button class="btn btn-outline-danger btn-sm" (click)="logout()">
+                         Logout
+                    </button>
+                } @else {
+                    <a routerLink="/login" class="btn btn-outline-primary btn-sm me-2">Login</a>
+                    <a routerLink="/register" class="btn btn-primary btn-sm">Register</a>
+                }
             </ul>
         </div>
     </div>
