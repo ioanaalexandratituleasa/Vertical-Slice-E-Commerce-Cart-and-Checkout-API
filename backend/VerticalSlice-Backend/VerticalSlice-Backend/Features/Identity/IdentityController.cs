@@ -28,5 +28,18 @@ namespace VerticalSlice_Backend.Features.Identity
             }
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO request)
+        {
+            try
+            {
+                var result = await _identityRepository.LoginAsync(request);
+                return Ok(result);
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
