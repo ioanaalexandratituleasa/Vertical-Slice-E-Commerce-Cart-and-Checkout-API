@@ -5,6 +5,6 @@ namespace VerticalSlice_Backend.Features.Products
     public interface IProductsRepository
     {
         Task<ProductDetailDTO?> GetProductByIdAsync(int ProductID);
-        Task<ProductDetailDTO?> GetAllProductsAsync();
+        Task<IEnumerable<ProductDetailDTO>> GetAllProductsAsync();
     }
 }

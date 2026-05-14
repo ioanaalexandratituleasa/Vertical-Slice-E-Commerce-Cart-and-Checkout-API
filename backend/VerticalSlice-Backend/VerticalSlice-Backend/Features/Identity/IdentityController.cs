@@ -7,9 +7,9 @@ namespace VerticalSlice_Backend.Features.Identity
     [ApiController]
     public class IdentityController : ControllerBase
     {
-        private readonly IdentityRepository _identityRepository;
+        private readonly IIdentityRepository _identityRepository;
 
-        public IdentityController(IdentityRepository identityRepository)
+        public IdentityController(IIdentityRepository identityRepository)
         {
             _identityRepository = identityRepository;
         }

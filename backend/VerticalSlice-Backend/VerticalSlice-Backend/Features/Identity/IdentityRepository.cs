@@ -8,7 +8,7 @@ using VerticalSlice_Backend.Common;
 
 namespace VerticalSlice_Backend.Features.Identity
 {
-    public class IdentityRepository
+    public class IdentityRepository:IIdentityRepository
     {
         private readonly DbConnectionFactory _dbConnectionFactory;
         private readonly IConfiguration _configuration;

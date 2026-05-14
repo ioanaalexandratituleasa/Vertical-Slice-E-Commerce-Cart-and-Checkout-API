@@ -9,9 +9,9 @@ namespace VerticalSlice_Backend.Features.Checkout.CheckoutDTOs
     [ApiController]
     public class CheckoutController : ControllerBase
     {
-        private readonly CheckoutRepository _checkoutRepository;
+        private readonly ICheckoutRepository _checkoutRepository;
 
-        public CheckoutController(CheckoutRepository checkoutRepository)
+        public CheckoutController(ICheckoutRepository checkoutRepository)
         {
             _checkoutRepository = checkoutRepository;
         }

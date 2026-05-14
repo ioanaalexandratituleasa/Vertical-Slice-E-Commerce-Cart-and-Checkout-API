@@ -1,12 +1,18 @@
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using VerticalSlice_Backend.Features.Checkout;
+using VerticalSlice_Backend.Features.Identity;
+using VerticalSlice_Backend.Features.Products;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<VerticalSlice_Backend.Common.DbConnectionFactory>();
 
+builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+builder.Services.AddScoped<ICheckoutRepository, CheckoutRepository>();
+builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
 builder.Services.AddScoped<VerticalSlice_Backend.Features.CartAndFavorites.CartAndFavoritesRepository>();
 builder.Services.AddScoped<VerticalSlice_Backend.Features.Identity.IdentityRepository>();
 builder.Services.AddScoped<VerticalSlice_Backend.Features.Products.ProductsRepository>();

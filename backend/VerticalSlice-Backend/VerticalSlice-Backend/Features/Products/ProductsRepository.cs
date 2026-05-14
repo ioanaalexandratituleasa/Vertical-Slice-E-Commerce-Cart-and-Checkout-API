@@ -5,7 +5,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace VerticalSlice_Backend.Features.Products
 {
-    public class ProductsRepository
+    public class ProductsRepository:IProductsRepository
     {
         private readonly DbConnectionFactory _dbConnectionFactory;
 

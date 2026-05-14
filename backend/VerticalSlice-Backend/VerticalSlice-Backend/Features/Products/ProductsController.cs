@@ -7,9 +7,9 @@ namespace VerticalSlice_Backend.Features.Products
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly ProductsRepository _productsRepository;
+        private readonly IProductsRepository _productsRepository;
 
-        public ProductsController(ProductsRepository productsRepository)
+        public ProductsController(IProductsRepository productsRepository)
         {
             _productsRepository = productsRepository;
         }

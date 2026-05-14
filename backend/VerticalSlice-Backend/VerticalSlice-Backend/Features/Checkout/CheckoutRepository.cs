@@ -5,7 +5,7 @@ using VerticalSlice_Backend.Features.Checkout.CheckoutDTOs;
 
 namespace VerticalSlice_Backend.Features.Checkout
 {
-    public class CheckoutRepository
+    public class CheckoutRepository:ICheckoutRepository
     {
         private readonly DbConnectionFactory _dbConnectionFactory;
 
@@ -48,6 +48,18 @@ namespace VerticalSlice_Backend.Features.Checkout
 
                 foreach (var item in data.Items)
                 {
+                    const string getPriceSql = "SELECT Price FROM Products WHERE ProductID = @PID";
+                    using var cmdPrice = connection.CreateCommand();
+                    cmdPrice.CommandText = getPriceSql;
+                    cmdPrice.Transaction = transaction;
+                    AddParam(cmdPrice, "@PID", item.ProductID);
+                    var resultPrice = await ((SqlCommand)cmdPrice).ExecuteScalarAsync();
+
+                    if (resultPrice == null || resultPrice == DBNull.Value)
+                        throw new Exception($"Produsul {item.ProductID} nu există.");
+                    decimal dbPrice = Convert.ToDecimal(resultPrice);
+                    var calculatedTotalPerItem = dbPrice * item.Quantity;
+
                     const string itemSql = @"INSERT INTO OrderItems (OrderID, ProductID, TotalPrice, Quantity) 
                                            VALUES (@OID, @PID, @Price, @Qty)";
 
